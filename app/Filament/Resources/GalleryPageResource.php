@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\GiftsManagementResource\Pages;
-use App\Filament\Resources\GiftsManagementResource\RelationManagers;
-use App\Models\GiftsManagement;
+use App\Filament\Resources\GalleryPageResource\Pages;
+use App\Filament\Resources\GalleryPageResource\RelationManagers;
+use App\Models\Gallery;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -14,13 +15,12 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class GiftsManagementResource extends Resource
+class GalleryPageResource extends Resource
 {
-    protected static ?string $model = GiftsManagement::class;
+    protected static ?string $model = Gallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -28,9 +28,9 @@ class GiftsManagementResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('point')->label('Points'),
-                TextInput::make('reward')->label('Reward'),
-                FileUpload::make('img')->label('Image'),
+                TextInput::make('title')->columns(2),
+                TextInput::make('content')->columns(2),
+                FileUpload::make('img')->columnSpanFull()->directory('gallery'),
             ]);
     }
 
@@ -39,9 +39,7 @@ class GiftsManagementResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('img'),
-                TextColumn::make('point'),
-                TextColumn::make('reward'),
-                ToggleColumn::make('status'),
+                TextColumn::make('title'),
             ])
             ->filters([
                 //
@@ -64,9 +62,9 @@ class GiftsManagementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGiftsManagement::route('/'),
-            'create' => Pages\CreateGiftsManagement::route('/create'),
-            'edit' => Pages\EditGiftsManagement::route('/{record}/edit'),
+            'index' => Pages\ListGalleryPages::route('/'),
+            'create' => Pages\CreateGalleryPage::route('/create'),
+            'edit' => Pages\EditGalleryPage::route('/{record}/edit'),
         ];
     }
 }

@@ -53,7 +53,6 @@ class QrCodeResource extends Resource
                     ->action(function ($record) {
                         $imagePath = public_path('/storage/' . $record->qrCode);
                         $filename = basename($imagePath);
-                        //Extra
 
                         $image = Image::make($imagePath);
                         $image->text("Montac Plywood QR Code.", 10, 10, function ($font) {
