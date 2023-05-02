@@ -3,22 +3,17 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QrCodeResource\Pages;
-use App\Filament\Resources\QrCodeResource\RelationManagers;
 use App\Models\QrCode;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class QrCodeResource extends Resource
 {
@@ -31,13 +26,8 @@ class QrCodeResource extends Resource
         return $form
             ->schema([
                 TextInput::make('points'),
-                Select::make('single_use')->label('This QR for Multi user or Single User?')
-                    ->options([
-                        0 => 'Single Use',
-                        1 => 'Multi Use Use',
-                    ]),
                 TextInput::make('uuid')->label('Code')->disabled(),
-                FileUpload::make('qrCode')->disabled(),
+                FileUpload::make('qrCode')->disabled()->enableDownload(),
             ]);
     }
 
@@ -53,21 +43,39 @@ class QrCodeResource extends Resource
                         '0' => 'Not Used',
                         '1' => 'Expired',
                     ]),
-                BadgeColumn::make('single_use')
-                    ->label("single use")
-                    ->enum([
-                        '0' => 'Single Use',
-                        '1' => 'Multi Use',
-                    ]),
-                BadgeColumn::make('used_count')
-                    ->label("Count")
 
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('download')->label('Download QR Code')->icon('heroicon-o-qrcode')
+                    ->action(function ($record) {
+                        $imagePath = public_path('/storage/' . $record->qrCode);
+                        $filename = basename($imagePath);
+                        //Extra
+
+                        $image = Image::make($imagePath);
+                        $image->text("Montac Plywood QR Code.", 10, 10, function ($font) {
+                            $font->file(public_path('/font/ArialCE.ttf'));
+                            $font->size(18);
+                            $font->color('#000000');
+                            $font->align('left');
+                            $font->valign('top');
+                        });
+
+                        $headers = [
+                            'Content-Type' => 'image/png',
+                            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                        ];
+                        return response()->stream(function () use ($image) {
+                            echo $image->encode('png');
+                        }, 200, $headers);
+                    }),
+
+
                 Tables\Actions\EditAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

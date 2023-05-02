@@ -16,7 +16,7 @@ class CreateQrCode extends CreateRecord
     public function mutateFormDataBeforeCreate(array $data): array
     {
         $uuid = $data['uuid'] = uniqid(rand(0000, 9999));
-        $qr = "https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=$uuid&choe=UTF-8";
+        $qr = "https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=$uuid&choe=UTF-8";
 
         $client = new Client();
         $response = $client->get($qr);
