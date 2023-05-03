@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QrCodeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +16,5 @@ Route::prefix('/{type}')->group(function () {
 })->where('type', 'email|mobile');
 
 Route::middleware('auth:api')->group(function () {
-    //
+    Route::post('point-claimed', [QrCodeController::class, 'index']);
 });

@@ -43,4 +43,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function point()
+    {
+        return $this->hasMany(QrCode::class, 'user_id'); //->selectRaw('SUM(points) as points')->groupBy('user_id');;
+    }
 }
