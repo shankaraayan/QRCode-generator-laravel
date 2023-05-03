@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('qrCode')->nullable();
             $table->integer('used')->nullable()->default(0);
             $table->integer('used_count')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

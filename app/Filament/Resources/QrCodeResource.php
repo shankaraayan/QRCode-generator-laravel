@@ -42,14 +42,20 @@ class QrCodeResource extends Resource
                     ->enum([
                         '0' => 'Not Used',
                         '1' => 'Expired',
+                    ])
+                    ->colors([
+                        'success' => '0',
+                        'warning' => '1',
                     ]),
+
+                BadgeColumn::make('user.name')->label('Coupon Used By')->colors(['primary']),
 
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('download')->label('Download QR Code')->icon('heroicon-o-qrcode')
+                Tables\Actions\Action::make('download')->label('Download QR Code')->icon('heroicon-o-qrcode')->color('warning')
                     ->action(function ($record) {
                         $imagePath = public_path('/storage/' . $record->qrCode);
                         $filename = basename($imagePath);

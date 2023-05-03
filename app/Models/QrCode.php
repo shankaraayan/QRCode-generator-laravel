@@ -16,5 +16,11 @@ class QrCode extends Model
         'qrCode',
         'used',
         'used_count',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
